@@ -1,0 +1,25 @@
+server:
+  port: ${SERVER_PORT:8095}
+
+spring:
+  application:
+    name: market-data-service-java
+  threads:
+    virtual:
+      enabled: true
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:localhost}
+      port: ${SPRING_DATA_REDIS_PORT:6379}
+
+exchange:
+  market-data:
+    stream-prefix: ${MARKET_DATA_STREAM_PREFIX:/api/v1/market-data/stream}
+    redis-channel: ${MARKET_DATA_REDIS_CHANNEL:exchange.market-data.snapshots}
+    redis-enabled: ${EXCHANGE_MARKET_DATA_REDIS_ENABLED:false}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics

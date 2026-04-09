@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package exchange.notification.v1;
+
+option go_package = "local.exchange-demo/exchange-core-go/gen/proto/exchange/notification/v1;notificationv1";
+option java_multiple_files = true;
+option java_outer_classname = "PrivateEventProto";
+option java_package = "com.exchangedemo.notification.proto";
+
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+service PrivateNotificationService {
+  rpc Publish(PublishPrivateEventRequest) returns (PublishPrivateEventResponse);
+}
+
+message PublishPrivateEventRequest {
+  PrivateEvent event = 1;
+}
+
+message PublishPrivateEventResponse {
+  bool accepted = 1;
+  bool ignored = 2;
+  string topic = 3;
+  string channel = 4;
+}
+
+message PrivateEvent {
+  string event_id = 1;
+  string event_type = 2;
+  google.protobuf.Timestamp occurred_at = 3;
+  string correlation_id = 4;
+  string causation_id = 5;
+  string symbol = 6;
+  string order_id = 7;
+  string user_id = 8;
+  string shard_id = 9;
+  int32 version = 10;
+  google.protobuf.Struct payload = 11;
+}

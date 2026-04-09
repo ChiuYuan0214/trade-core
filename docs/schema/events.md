@@ -38,7 +38,7 @@ Every command and event should carry:
 ### `FundsReserved`
 
 - Emitted when funds are frozen successfully before order routing completes.
-- Current implementation note: the reserve/release logic exists in the application layer and append-only ledger store, while durable event publication is still pending.
+- Current implementation note: the reserve path is now owned by `ledger-service`, which applies the balance mutation and append-only ledger write for the current demo slice. Durable event publication is still pending.
 
 ### `FundsReservationFailed`
 
@@ -67,7 +67,9 @@ Every command and event should carry:
 ### `FundsReleased`
 
 - Emitted when frozen balances are returned to available balances.
+- Current implementation note: cancel-triggered release now executes through `ledger-service`, with `memory` and `postgres` backends supported behind the same write owner.
 
 ### `LedgerPosted`
 
 - Emitted when append-only ledger entries are durably written.
+- Current implementation note: the current write owner is the `ledger-service` process.

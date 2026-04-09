@@ -20,7 +20,9 @@ class NotificationRouterTest {
     void routesTradeExecutedToUserTradesChannel() {
         NotificationRouter router = new NotificationRouter(new NotificationProperties(
                 "exchange.private.events",
-                "/topic/private"
+                "/topic/private",
+                10084,
+                true
         ));
 
         EventEnvelope envelope = new EventEnvelope(

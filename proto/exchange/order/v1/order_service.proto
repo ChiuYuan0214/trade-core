@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+package exchange.order.v1;
+
+option go_package = "local.exchange-demo/exchange-core-go/gen/proto/exchange/order/v1;orderv1";
+option java_multiple_files = true;
+option java_outer_classname = "OrderServiceProto";
+option java_package = "com.exchangedemo.order.proto";
+
+service OrderService {
+  rpc PlaceOrder(PlaceOrderRequest) returns (PlaceOrderResponse);
+  rpc CancelOrder(CancelOrderRequest) returns (CancelOrderResponse);
+  rpc GetOrder(GetOrderRequest) returns (GetOrderResponse);
+  rpc GetBalance(GetBalanceRequest) returns (GetBalanceResponse);
+}
+
+message PlaceOrderRequest {
+  string client_order_id = 1;
+  string user_id = 2;
+  string symbol = 3;
+  string side = 4;
+  string type = 5;
+  string price = 6;
+  string quantity = 7;
+}
+
+message PlaceOrderResponse {
+  OrderView order = 1;
+}
+
+message CancelOrderRequest {
+  string order_id = 1;
+}
+
+message CancelOrderResponse {
+  OrderView order = 1;
+}
+
+message GetOrderRequest {
+  string order_id = 1;
+}
+
+message GetOrderResponse {
+  OrderView order = 1;
+}
+
+message GetBalanceRequest {
+  string user_id = 1;
+  string asset = 2;
+}
+
+message GetBalanceResponse {
+  BalanceView balance = 1;
+}
+
+message OrderView {
+  string order_id = 1;
+  string client_order_id = 2;
+  string user_id = 3;
+  string symbol = 4;
+  string side = 5;
+  string type = 6;
+  string price = 7;
+  string quantity = 8;
+  string filled_quantity = 9;
+  string status = 10;
+  string rejection_reason = 11;
+}
+
+message BalanceView {
+  string user_id = 1;
+  string asset = 2;
+  string available = 3;
+  string frozen = 4;
+}

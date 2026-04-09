@@ -4,6 +4,9 @@ server:
 spring:
   application:
     name: notification-service-java
+  threads:
+    virtual:
+      enabled: true
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
     consumer:
@@ -18,6 +21,8 @@ exchange:
   notification:
     event-topic: ${PRIVATE_EVENT_TOPIC:exchange.private.events}
     websocket-prefix: ${WS_PREFIX:/topic/private}
+    grpc-port: ${EXCHANGE_NOTIFICATION_GRPC_PORT:10084}
+    kafka-enabled: ${EXCHANGE_NOTIFICATION_KAFKA_ENABLED:true}
 
 management:
   endpoints:

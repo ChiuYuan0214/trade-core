@@ -1,61 +1,64 @@
 # Repo Structure
 
-Planned top-level layout:
+Current top-level layout:
 
 ```text
 exchange-demo/
-  cmd/
-    rest-gateway/
-    ws-gateway/
-    order-service/
-    matching-engine/
-    ledger-service/
-    market-data-service/
-    notification-service/
-    replay-tool/
-  internal/
-    domain/
-      order/
-      trade/
-      account/
-      ledger/
-      marketdata/
-    matching/
-      book/
-      engine/
-      queue/
-    events/
-    kafka/
-    postgres/
-    redis/
-    ws/
-    api/
-    config/
-    observability/
+  go.work
+  modules/
+    exchange-core-go/
+      api/
+      app/
+      bootstrap/
+      config/
+      domain/
+      events/
+      gen/
+      matching/
+      postgres/
+      shared/
   migrations/
   deployments/
   scripts/
+    java/
+    proto/
     seed/
     loadtest/
   services/
+    ledger-service-go/
+      cmd/ledger-service/
+    matching-engine-go/
+      cmd/matching-engine/
+    order-service-go/
+      cmd/order-service/
+    replay-tool-go/
+      cmd/replay-tool/
+    rest-gateway-go/
+      cmd/rest-gateway/
+    ws-gateway-go/
+      cmd/ws-gateway/
     notification-service-java/
+    market-data-service-java/
   docs/
 ```
 
 ## Folder intent
 
-- `cmd/`: Thin process entrypoints per service.
-- `cmd/` should primarily compose config and `depin` registrations for each process.
-- `internal/domain/`: Core business types and rules.
-- `internal/matching/`: In-memory book, shard loop, queueing, and replay helpers.
-- `internal/events/`: Command and event envelopes plus shared metadata.
-- `internal/postgres/`, `internal/kafka/`, `internal/redis/`: Infrastructure adapters.
-- `internal/api/`: REST and possibly gRPC transport-layer contracts and handlers.
-- `internal/ws/`: Subscription, session, and fan-out logic.
+- `go.work`: Connects the active Go modules during local development.
+- `modules/exchange-core-go/`: Shared Go code used by multiple Go services.
+- `modules/exchange-core-go/bootstrap/`: Common `depin` bootstrap flow and per-process registration helpers.
+- `modules/exchange-core-go/shared/`: Shared demo runtime helpers such as process-local in-memory singleton state.
+- `modules/exchange-core-go/domain/`: Core business types and rules.
+- `modules/exchange-core-go/matching/`: In-memory book, shard loop, and queueing helpers.
+- `modules/exchange-core-go/events/`: Command and event envelopes plus shared metadata.
+- `modules/exchange-core-go/postgres/`: PostgreSQL adapters and migration runner.
+- `modules/exchange-core-go/api/`: Shared HTTP and gRPC transport implementations.
+- `services/*-go/`: Thin Go service modules with their own `go.mod` and binary entrypoints.
+- Current Go service modules: `rest-gateway-go`, `order-service-go`, `ledger-service-go`, `matching-engine-go`, `ws-gateway-go`, and `replay-tool-go`.
 - `migrations/`: Durable schema evolution.
 - `deployments/`: Docker Compose and deployment scaffolding.
 - `scripts/`: Seeding and load testing.
-- `services/`: Non-Go service modules; currently includes the Java Spring Boot notification service.
+- `services/`: Deployable service modules, including Go and Java services.
 - `docs/`: Modular architecture, feature, schema, and index references.
 
 ## File-size guidance

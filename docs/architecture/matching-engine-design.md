@@ -9,6 +9,7 @@ This document explains the current Phase 1 matching structure and the intended u
 - A single process may host multiple shards.
 - Matching uses price-time priority.
 - Cancel lookup uses `order_id`.
+- `order-service` now reaches the book through `exchange.matching.v1.MatchingEngineService` over gRPC instead of hosting local shards directly.
 
 ## Why multiple shards can exist in one process
 

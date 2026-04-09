@@ -21,6 +21,7 @@ This file groups relational schema by ownership domain so later work can load on
 
 - Owner: Ledger/Account domain
 - Purpose: current available and frozen balances by user and asset.
+- Current write owner: `ledger-service`
 - Primary key: `(user_id, asset)`
 - Important fields:
   - `available_balance`
@@ -31,6 +32,7 @@ This file groups relational schema by ownership domain so later work can load on
 
 - Owner: Ledger/Account domain
 - Purpose: append-only durable balance mutations.
+- Current write owner: `ledger-service`
 - Primary key: `entry_id`
 - Important fields:
   - `user_id`

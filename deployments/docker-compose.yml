@@ -36,6 +36,7 @@ services:
       dockerfile: services/notification-service-java/Dockerfile
     environment:
       SERVER_PORT: 8094
+      EXCHANGE_NOTIFICATION_GRPC_PORT: 10084
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       PRIVATE_EVENT_TOPIC: exchange.private.events
       WS_PREFIX: /topic/private
@@ -43,3 +44,20 @@ services:
       - kafka
     ports:
       - "8094:8094"
+      - "10084:10084"
+
+  market-data-service-java:
+    build:
+      context: ..
+      dockerfile: services/market-data-service-java/Dockerfile
+    environment:
+      SERVER_PORT: 8095
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      EXCHANGE_MARKET_DATA_REDIS_ENABLED: "true"
+      MARKET_DATA_REDIS_CHANNEL: exchange.market-data.snapshots
+      MARKET_DATA_STREAM_PREFIX: /api/v1/market-data/stream
+    depends_on:
+      - redis
+    ports:
+      - "8095:8095"

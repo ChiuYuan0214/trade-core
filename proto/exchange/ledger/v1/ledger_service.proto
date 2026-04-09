@@ -1,0 +1,89 @@
+syntax = "proto3";
+
+package exchange.ledger.v1;
+
+option go_package = "local.exchange-demo/exchange-core-go/gen/proto/exchange/ledger/v1;ledgerv1";
+option java_multiple_files = true;
+option java_outer_classname = "LedgerServiceProto";
+option java_package = "com.exchangedemo.ledger.proto";
+
+service LedgerService {
+  rpc ReserveFunds(ReserveFundsRequest) returns (ReserveFundsResponse);
+  rpc ReleaseFunds(ReleaseFundsRequest) returns (ReleaseFundsResponse);
+  rpc ApplyTrade(ApplyTradeRequest) returns (ApplyTradeResponse);
+  rpc GetBalance(GetBalanceRequest) returns (GetBalanceResponse);
+}
+
+message ReserveFundsRequest {
+  string user_id = 1;
+  string asset = 2;
+  string amount = 3;
+  string reference_id = 4;
+  string reference_type = 5;
+}
+
+message ReserveFundsResponse {}
+
+message ReleaseFundsRequest {
+  string user_id = 1;
+  string asset = 2;
+  string amount = 3;
+  string reference_id = 4;
+  string reference_type = 5;
+}
+
+message ReleaseFundsResponse {}
+
+message ApplyTradeRequest {
+  TradeView trade = 1;
+  LedgerOrder maker_order = 2;
+  LedgerOrder taker_order = 3;
+}
+
+message ApplyTradeResponse {}
+
+message GetBalanceRequest {
+  string user_id = 1;
+  string asset = 2;
+}
+
+message GetBalanceResponse {
+  BalanceView balance = 1;
+}
+
+message LedgerOrder {
+  string order_id = 1;
+  string client_order_id = 2;
+  string user_id = 3;
+  string symbol = 4;
+  string side = 5;
+  string type = 6;
+  string price = 7;
+  string quantity = 8;
+  string filled_quantity = 9;
+  string status = 10;
+  string rejection_reason = 11;
+  string created_at = 12;
+  string updated_at = 13;
+}
+
+message TradeView {
+  string trade_id = 1;
+  string symbol = 2;
+  string maker_order_id = 3;
+  string taker_order_id = 4;
+  string maker_user_id = 5;
+  string taker_user_id = 6;
+  string price = 7;
+  string quantity = 8;
+  string maker_fee = 9;
+  string taker_fee = 10;
+  string executed_at = 11;
+}
+
+message BalanceView {
+  string user_id = 1;
+  string asset = 2;
+  string available = 3;
+  string frozen = 4;
+}

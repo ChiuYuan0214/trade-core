@@ -1,0 +1,11 @@
+go 1.26.1
+
+use (
+	./modules/exchange-core-go
+	./services/ledger-service-go
+	./services/matching-engine-go
+	./services/order-service-go
+	./services/replay-tool-go
+	./services/rest-gateway-go
+	./services/ws-gateway-go
+)
