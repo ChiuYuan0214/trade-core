@@ -23,6 +23,12 @@ This repo implements `notification-service` as a Java Spring Boot service to mak
 - gRPC service endpoint via `PrivateNotificationService.Publish`
 - HTTP service endpoint at `POST /internal/notifications/events` kept only as a local fallback path
 
+## Verified coverage
+
+- Maven test coverage now includes routing, HTTP ingest, and gRPC publish handling.
+- The module packages successfully into a Spring Boot jar with Java 21.
+- The Docker build path now points at the service-local jar output instead of a repo-root target path.
+
 ## Generated gRPC sources
 
 - Java protobuf and gRPC sources are generated into `services/notification-service-java/src/generated`.

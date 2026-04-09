@@ -19,9 +19,16 @@ This repo implements `market-data-service` as a Java Spring Boot service to stre
 ## Current interfaces
 
 - SSE endpoint at `GET /api/v1/market-data/stream?symbol=...`
+- Snapshot list at `GET /api/v1/market-data`
 - Snapshot query at `GET /api/v1/market-data/{symbol}`
 - Local ingest endpoint at `POST /internal/market-data/snapshots`
 - Optional Redis pub/sub subscriber when `exchange.market-data.redis-enabled=true`
+
+## Verified coverage
+
+- Maven test coverage now includes dispatch, controller endpoints, and Redis subscriber handling.
+- The module packages successfully into a Spring Boot jar with Java 21.
+- SSE subscription behavior is covered at the controller layer as an async endpoint.
 
 ## Portfolio talking point
 

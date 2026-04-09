@@ -16,6 +16,14 @@ docker compose -f deployments/docker-compose.yml up -d kafka notification-servic
 
 The helper script resolves Java 21 and Maven explicitly so the module does not depend on whichever shell PATH happens to be active.
 
+## Package the runnable jar
+
+```bash
+JAVA_HOME=/Users/adam/.sdkman/candidates/java/21.0.3-tem \
+PATH=/Users/adam/.sdkman/candidates/maven/current/bin:$JAVA_HOME/bin:$PATH \
+cd services/notification-service-java && mvn -DskipTests package
+```
+
 ## Regenerate visible gRPC sources
 
 ```bash
@@ -61,3 +69,4 @@ java -jar services/notification-service-java/target/notification-service-java-0.
 ## Build note
 
 - The module has been verified with Java 21 plus Maven using the helper script above.
+- HTTP ingest and gRPC handling both have automated test coverage now, so the demo path is not only manually wired.

@@ -8,6 +8,14 @@ Use this flow to demo the Java/Spring Boot market-data service as part of the po
 ./scripts/java/test_market_data_service.sh
 ```
 
+## Package the runnable jar
+
+```bash
+JAVA_HOME=/Users/adam/.sdkman/candidates/java/21.0.3-tem \
+PATH=/Users/adam/.sdkman/candidates/maven/current/bin:$JAVA_HOME/bin:$PATH \
+cd services/market-data-service-java && mvn -DskipTests package
+```
+
 ## Start the Java service
 
 ```bash
@@ -49,3 +57,4 @@ curl -N http://127.0.0.1:8095/api/v1/market-data/stream?symbol=BTC/USDT
 - A second non-core exchange service can live in Java without weakening the Go-first execution core.
 - The Java service uses Java 21 virtual threads for public request and stream handling.
 - The service is ready to sit behind Redis pub/sub for public market-data fan-out.
+- The HTTP query, ingest, and Redis intake paths are covered by automated tests, so the service is more than a static scaffold.
