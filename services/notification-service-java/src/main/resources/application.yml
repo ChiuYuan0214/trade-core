@@ -1,0 +1,26 @@
+server:
+  port: ${SERVER_PORT:8094}
+
+spring:
+  application:
+    name: notification-service-java
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: ${KAFKA_CONSUMER_GROUP:notification-service-java}
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+
+exchange:
+  notification:
+    event-topic: ${PRIVATE_EVENT_TOPIC:exchange.private.events}
+    websocket-prefix: ${WS_PREFIX:/topic/private}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
