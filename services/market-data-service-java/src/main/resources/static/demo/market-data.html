@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Market Data Demo</title>
+  <style>
+    :root {
+      --bg: #07111f;
+      --panel: rgba(8, 15, 33, 0.86);
+      --panel-soft: rgba(15, 23, 42, 0.9);
+      --line: rgba(148, 163, 184, 0.18);
+      --text: #e5eef9;
+      --muted: #93a4bb;
+      --accent: #38bdf8;
+      --accent-2: #14b8a6;
+      --shadow: 0 20px 55px rgba(2, 8, 23, 0.38);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Space Grotesk", "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top, rgba(56, 189, 248, 0.18), transparent 26%),
+        radial-gradient(circle at right bottom, rgba(20, 184, 166, 0.14), transparent 30%),
+        linear-gradient(160deg, #020617, #0b1220 35%, #07111f);
+    }
+
+    .shell {
+      width: min(1200px, calc(100% - 32px));
+      margin: 28px auto;
+      display: grid;
+      gap: 18px;
+    }
+
+    .hero,
+    .panel {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .hero {
+      padding: 28px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: 0.78rem;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      line-height: 0.96;
+      max-width: 10ch;
+    }
+
+    .hero p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+      max-width: 70ch;
+    }
+
+    .layout {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .panel {
+      padding: 22px;
+    }
+
+    h2 {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 0.96rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    input,
+    button,
+    textarea {
+      width: 100%;
+      border-radius: 14px;
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      background: var(--panel-soft);
+      color: var(--text);
+      padding: 12px 14px;
+      font: inherit;
+    }
+
+    textarea {
+      min-height: 170px;
+      resize: vertical;
+      font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
+      font-size: 0.82rem;
+      line-height: 1.5;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    button {
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .primary {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.18), rgba(56, 189, 248, 0.06));
+    }
+
+    .secondary {
+      background: linear-gradient(135deg, rgba(20, 184, 166, 0.18), rgba(20, 184, 166, 0.06));
+    }
+
+    .snapshot {
+      display: grid;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .tour {
+      margin-top: 18px;
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(8, 15, 33, 0.72);
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .tour strong {
+      color: var(--text);
+    }
+
+    .quote {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .metric {
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(8, 15, 33, 0.75);
+    }
+
+    .metric-label {
+      color: var(--muted);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .metric-value {
+      margin-top: 6px;
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    .log {
+      max-height: 520px;
+      overflow: auto;
+      display: grid;
+      gap: 12px;
+    }
+
+    .log-entry {
+      padding: 15px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(15, 23, 42, 0.78);
+    }
+
+    .log-entry pre {
+      margin: 8px 0 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: #d8e3ef;
+      font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
+      font-size: 0.82rem;
+    }
+
+    @media (max-width: 960px) {
+      .layout,
+      .form-grid,
+      .quote {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="shell">
+  <section class="hero">
+    <div class="eyebrow">Exchange Demo / Java Market Data Service</div>
+    <h1>Public Market Stream</h1>
+    <p>
+      This page uses native <code>EventSource</code> to subscribe to the Spring Boot SSE stream, query the latest
+      snapshot back over HTTP, and push fresh snapshots into the service through the internal ingest endpoint.
+    </p>
+  </section>
+
+  <section class="layout">
+    <div class="panel">
+      <h2>Controls</h2>
+      <div class="form-grid">
+        <label>
+          Base URL
+          <input id="baseUrl" value="">
+        </label>
+        <label>
+          Symbol
+          <input id="symbol" value="BTC/USDT">
+        </label>
+      </div>
+
+      <div class="actions">
+        <button class="primary" id="connectBtn">Open SSE Stream</button>
+        <button class="secondary" id="snapshotBtn">Load Snapshot</button>
+        <button id="seedBtn">Send Demo Snapshot</button>
+      </div>
+
+      <div class="tour">
+        <strong>Suggested live flow:</strong><br>
+        1. Open the SSE stream.<br>
+        2. Send a snapshot update from this page.<br>
+        3. Show the latest quote panel update without refreshing.
+      </div>
+
+      <label style="margin-top:14px;">
+        Snapshot Payload JSON
+        <textarea id="payload">{
+  "symbol": "BTC/USDT",
+  "bestBid": "60000",
+  "bestAsk": "60010",
+  "bidSize": "1.5",
+  "askSize": "0.8",
+  "lastPrice": "60005",
+  "sequence": 42,
+  "occurredAt": "2026-04-10T00:00:00Z",
+  "source": "demo-page"
+}</textarea>
+      </label>
+
+      <div class="snapshot">
+        <h2>Latest Snapshot</h2>
+        <div class="quote">
+          <div class="metric">
+            <div class="metric-label">Best Bid</div>
+            <div class="metric-value" id="bestBid">-</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Best Ask</div>
+            <div class="metric-value" id="bestAsk">-</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Last Price</div>
+            <div class="metric-value" id="lastPrice">-</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Stream Log</h2>
+      <div class="log" id="log"></div>
+    </div>
+  </section>
+</div>
+
+<script>
+  const baseUrlInput = document.getElementById("baseUrl");
+  const symbolInput = document.getElementById("symbol");
+  const payloadInput = document.getElementById("payload");
+  const log = document.getElementById("log");
+  const bestBid = document.getElementById("bestBid");
+  const bestAsk = document.getElementById("bestAsk");
+  const lastPrice = document.getElementById("lastPrice");
+
+  let stream;
+
+  baseUrlInput.value = window.location.origin;
+
+  function appendLog(title, data) {
+    const entry = document.createElement("article");
+    entry.className = "log-entry";
+    entry.innerHTML = `<strong>${title}</strong><pre>${typeof data === "string" ? data : JSON.stringify(data, null, 2)}</pre>`;
+    log.prepend(entry);
+  }
+
+  function renderSnapshot(snapshot) {
+    bestBid.textContent = snapshot.bestBid ?? "-";
+    bestAsk.textContent = snapshot.bestAsk ?? "-";
+    lastPrice.textContent = snapshot.lastPrice ?? "-";
+  }
+
+  function applyPreset(symbol) {
+    symbolInput.value = symbol;
+    const presets = {
+      "BTC/USDT": {
+        symbol: "BTC/USDT",
+        bestBid: "60000",
+        bestAsk: "60010",
+        bidSize: "1.5",
+        askSize: "0.8",
+        lastPrice: "60005",
+        sequence: 42,
+        occurredAt: "2026-04-10T00:00:00Z",
+        source: "demo-page"
+      },
+      "ETH/USDT": {
+        symbol: "ETH/USDT",
+        bestBid: "3200",
+        bestAsk: "3201",
+        bidSize: "12.4",
+        askSize: "10.1",
+        lastPrice: "3200.5",
+        sequence: 42,
+        occurredAt: "2026-04-10T00:00:00Z",
+        source: "demo-page"
+      }
+    };
+    payloadInput.value = JSON.stringify(presets[symbol], null, 2);
+  }
+
+  function streamUrl() {
+    const url = new URL("/api/v1/market-data/stream", baseUrlInput.value.trim());
+    url.searchParams.set("symbol", symbolInput.value.trim());
+    return url.toString();
+  }
+
+  async function loadSnapshot() {
+    const symbol = encodeURIComponent(symbolInput.value.trim());
+    const response = await fetch(`${baseUrlInput.value.trim()}/api/v1/market-data/${symbol}`);
+    if (!response.ok) {
+      appendLog("HTTP", `Snapshot query failed: ${response.status} ${response.statusText}`);
+      return;
+    }
+    const snapshot = await response.json();
+    renderSnapshot(snapshot);
+    appendLog("SNAPSHOT", snapshot);
+  }
+
+  function connectStream() {
+    if (stream) {
+      stream.close();
+    }
+    stream = new EventSource(streamUrl());
+    appendLog("SSE", `Connecting to ${streamUrl()}`);
+
+    stream.addEventListener("market-data", event => {
+      const snapshot = JSON.parse(event.data);
+      renderSnapshot(snapshot);
+      appendLog(`SSE #${event.lastEventId || snapshot.sequence}`, snapshot);
+    });
+
+    stream.onerror = () => {
+      appendLog("SSE", "Stream connection error or closed by server");
+    };
+  }
+
+  async function sendSnapshot() {
+    let payload;
+    try {
+      payload = JSON.parse(payloadInput.value);
+    } catch (error) {
+      appendLog("CLIENT", `Payload JSON is invalid: ${error.message}`);
+      return;
+    }
+    payload.symbol = symbolInput.value.trim();
+    payload.occurredAt = new Date().toISOString();
+    payload.sequence = Date.now();
+
+    const response = await fetch(`${baseUrlInput.value.trim()}/internal/market-data/snapshots`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(payload)
+    });
+    const json = await response.json();
+    appendLog("INGEST", json);
+  }
+
+  document.getElementById("connectBtn").addEventListener("click", connectStream);
+  document.getElementById("snapshotBtn").addEventListener("click", () => {
+    loadSnapshot().catch(error => appendLog("CLIENT", error.message));
+  });
+  document.getElementById("seedBtn").addEventListener("click", () => {
+    sendSnapshot().catch(error => appendLog("CLIENT", error.message));
+  });
+
+  applyPreset("BTC/USDT");
+</script>
+</body>
+</html>

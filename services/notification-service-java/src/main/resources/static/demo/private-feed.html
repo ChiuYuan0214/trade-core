@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Private Feed Demo</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: rgba(15, 23, 42, 0.84);
+      --panel-alt: rgba(30, 41, 59, 0.92);
+      --line: rgba(148, 163, 184, 0.22);
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #f59e0b;
+      --accent-2: #22c55e;
+      --danger: #fb7185;
+      --shadow: 0 18px 60px rgba(2, 6, 23, 0.45);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(245, 158, 11, 0.2), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(34, 197, 94, 0.12), transparent 32%),
+        linear-gradient(160deg, #020617, #0f172a 45%, #111827);
+      min-height: 100vh;
+    }
+
+    .shell {
+      width: min(1180px, calc(100% - 32px));
+      margin: 28px auto;
+      display: grid;
+      gap: 18px;
+    }
+
+    .hero,
+    .card {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      border-radius: 24px;
+    }
+
+    .hero {
+      padding: 28px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      font-size: 0.78rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      line-height: 0.95;
+      max-width: 10ch;
+    }
+
+    .hero p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 68ch;
+      line-height: 1.6;
+    }
+
+    .grid {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: 1.1fr 0.9fr;
+    }
+
+    .card {
+      padding: 22px;
+    }
+
+    .card h2 {
+      margin: 0 0 14px;
+      font-size: 1rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+
+    input,
+    select,
+    button,
+    textarea {
+      width: 100%;
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      border-radius: 14px;
+      background: var(--panel-alt);
+      color: var(--text);
+      padding: 12px 14px;
+      font: inherit;
+    }
+
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+      line-height: 1.45;
+    }
+
+    button {
+      cursor: pointer;
+      font-weight: 700;
+      transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      border-color: rgba(245, 158, 11, 0.35);
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .primary {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.1));
+    }
+
+    .secondary {
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.16), rgba(34, 197, 94, 0.08));
+    }
+
+    .danger {
+      background: linear-gradient(135deg, rgba(251, 113, 133, 0.18), rgba(251, 113, 133, 0.08));
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 14px;
+      color: var(--muted);
+    }
+
+    .tour {
+      margin-top: 18px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(8, 15, 33, 0.72);
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .tour strong {
+      color: var(--text);
+    }
+
+    .mini-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    .mini-actions button {
+      width: auto;
+      min-width: 0;
+      padding: 10px 12px;
+      font-size: 0.84rem;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--danger);
+      box-shadow: 0 0 0 0 rgba(251, 113, 133, 0.5);
+    }
+
+    .dot.live {
+      background: var(--accent-2);
+      box-shadow: 0 0 0 8px rgba(34, 197, 94, 0.12);
+    }
+
+    .feed {
+      display: grid;
+      gap: 12px;
+      max-height: 540px;
+      overflow: auto;
+      padding-right: 2px;
+    }
+
+    .event {
+      border: 1px solid var(--line);
+      background: rgba(15, 23, 42, 0.8);
+      border-radius: 18px;
+      padding: 16px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .event-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: baseline;
+    }
+
+    .event-type {
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .event-time,
+    .meta {
+      font-size: 0.84rem;
+      color: var(--muted);
+    }
+
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
+      font-size: 0.82rem;
+      color: #cbd5e1;
+    }
+
+    @media (max-width: 920px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="shell">
+  <section class="hero">
+    <div class="eyebrow">Exchange Demo / Java Notification Service</div>
+    <h1>Private Feed Console</h1>
+    <p>
+      This page connects directly to the Spring Boot STOMP broker at <code>/ws/private</code>, subscribes to a
+      user-specific topic, and lets you emit demo private events through the HTTP ingest endpoint.
+    </p>
+  </section>
+
+  <section class="grid">
+    <div class="card">
+      <h2>Connection</h2>
+      <div class="form-grid">
+        <label>
+          Base URL
+          <input id="baseUrl" value="">
+        </label>
+        <label>
+          User ID
+          <input id="userId" value="11111111-1111-1111-1111-111111111111">
+        </label>
+        <label>
+          Channel
+          <select id="channel">
+            <option value="trades">Trades</option>
+            <option value="balances">Balances</option>
+            <option value="orders">Orders</option>
+          </select>
+        </label>
+        <label>
+          Topic Preview
+          <input id="topic" readonly>
+        </label>
+      </div>
+
+      <div class="actions">
+        <button class="primary" id="connectBtn">Connect Feed</button>
+        <button class="danger" id="disconnectBtn">Disconnect</button>
+      </div>
+
+      <div class="status">
+        <span class="dot" id="statusDot"></span>
+        <span id="statusText">Disconnected</span>
+      </div>
+
+      <div class="tour">
+        <strong>Suggested live flow:</strong><br>
+        1. Connect to the user topic.<br>
+        2. Pick a preset event shape.<br>
+        3. Send the event and watch the STOMP feed update in real time.
+        <div class="mini-actions">
+          <button type="button" id="loadTradePreset">Trade Preset</button>
+          <button type="button" id="loadBalancePreset">Balance Preset</button>
+          <button type="button" id="loadOrderPreset">Order Preset</button>
+        </div>
+      </div>
+
+      <h2 style="margin-top:22px;">Emit Demo Event</h2>
+      <div class="form-grid">
+        <label>
+          Event Type
+          <select id="eventType">
+            <option value="TradeExecuted">TradeExecuted</option>
+            <option value="FundsReserved">FundsReserved</option>
+            <option value="OrderAccepted">OrderAccepted</option>
+          </select>
+        </label>
+        <label>
+          Symbol
+          <input id="symbol" value="BTC/USDT">
+        </label>
+      </div>
+      <label style="margin-top:12px;">
+        Payload JSON
+        <textarea id="payload">{
+  "tradeId": "55555555-aaaa-bbbb-cccc-555555555555",
+  "price": "60000",
+  "quantity": "0.25"
+}</textarea>
+      </label>
+      <div class="actions">
+        <button class="secondary" id="sendBtn">Send Demo Event</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Feed Output</h2>
+      <div class="feed" id="feed"></div>
+    </div>
+  </section>
+</div>
+
+<script>
+  const baseUrlInput = document.getElementById("baseUrl");
+  const userIdInput = document.getElementById("userId");
+  const channelInput = document.getElementById("channel");
+  const topicInput = document.getElementById("topic");
+  const statusDot = document.getElementById("statusDot");
+  const statusText = document.getElementById("statusText");
+  const feed = document.getElementById("feed");
+  const eventTypeInput = document.getElementById("eventType");
+  const symbolInput = document.getElementById("symbol");
+  const payloadInput = document.getElementById("payload");
+
+  let socket;
+  let connected = false;
+  let stompBuffer = "";
+  let subscriptionTopic = "";
+
+  baseUrlInput.value = window.location.origin;
+
+  function buildTopic() {
+    return `/topic/private/${userIdInput.value.trim()}/${channelInput.value}`;
+  }
+
+  function updateTopicPreview() {
+    topicInput.value = buildTopic();
+  }
+
+  function applyPreset(kind) {
+    if (kind === "trade") {
+      channelInput.value = "trades";
+      eventTypeInput.value = "TradeExecuted";
+      symbolInput.value = "BTC/USDT";
+      payloadInput.value = JSON.stringify({
+        tradeId: "55555555-aaaa-bbbb-cccc-555555555555",
+        price: "60000",
+        quantity: "0.25",
+        liquidity: "taker"
+      }, null, 2);
+    }
+
+    if (kind === "balance") {
+      channelInput.value = "balances";
+      eventTypeInput.value = "FundsReserved";
+      symbolInput.value = "BTC/USDT";
+      payloadInput.value = JSON.stringify({
+        asset: "USDT",
+        amount: "60000",
+        reason: "limit-buy-reservation"
+      }, null, 2);
+    }
+
+    if (kind === "order") {
+      channelInput.value = "orders";
+      eventTypeInput.value = "OrderAccepted";
+      symbolInput.value = "BTC/USDT";
+      payloadInput.value = JSON.stringify({
+        side: "BUY",
+        type: "LIMIT",
+        price: "60000",
+        quantity: "1"
+      }, null, 2);
+    }
+
+    updateTopicPreview();
+  }
+
+  function appendEvent(title, data, meta = "") {
+    const wrapper = document.createElement("article");
+    wrapper.className = "event";
+    wrapper.innerHTML = `
+      <div class="event-top">
+        <span class="event-type">${title}</span>
+        <span class="event-time">${new Date().toLocaleTimeString()}</span>
+      </div>
+      <div class="meta">${meta}</div>
+      <pre>${typeof data === "string" ? data : JSON.stringify(data, null, 2)}</pre>
+    `;
+    feed.prepend(wrapper);
+  }
+
+  function setStatus(isLive, text) {
+    connected = isLive;
+    statusDot.classList.toggle("live", isLive);
+    statusText.textContent = text;
+  }
+
+  function wsUrlFromBase(base) {
+    const url = new URL(base);
+    url.protocol = url.protocol === "https:" ? "wss:" : "ws:";
+    url.pathname = "/ws/private";
+    url.search = "";
+    url.hash = "";
+    return url.toString();
+  }
+
+  function sendFrame(command, headers = {}, body = "") {
+    if (!socket || socket.readyState !== WebSocket.OPEN) {
+      return;
+    }
+    let frame = `${command}\n`;
+    for (const [key, value] of Object.entries(headers)) {
+      frame += `${key}:${value}\n`;
+    }
+    frame += `\n${body}\0`;
+    socket.send(frame);
+  }
+
+  function handleFrame(frame) {
+    const [headerBlock, ...bodyParts] = frame.split("\n\n");
+    const lines = headerBlock.split("\n");
+    const command = lines.shift();
+    const headers = {};
+    for (const line of lines) {
+      if (!line) continue;
+      const index = line.indexOf(":");
+      headers[line.slice(0, index)] = line.slice(index + 1);
+    }
+    const body = bodyParts.join("\n\n");
+
+    if (command === "CONNECTED") {
+      setStatus(true, `Connected to ${subscriptionTopic}`);
+      sendFrame("SUBSCRIBE", {id: "demo-sub-0", destination: subscriptionTopic});
+      appendEvent("CONNECTED", headers, "STOMP handshake completed");
+      return;
+    }
+
+    if (command === "MESSAGE") {
+      try {
+        appendEvent(headers.destination || "MESSAGE", JSON.parse(body), headers.subscription || "");
+      } catch {
+        appendEvent(headers.destination || "MESSAGE", body, headers.subscription || "");
+      }
+      return;
+    }
+
+    if (command === "ERROR") {
+      appendEvent("ERROR", body || headers.message || "Unknown STOMP error");
+      setStatus(false, "Broker returned ERROR");
+      return;
+    }
+
+    appendEvent(command || "FRAME", body || headers);
+  }
+
+  function connect() {
+    disconnect();
+    updateTopicPreview();
+    subscriptionTopic = buildTopic();
+    socket = new WebSocket(wsUrlFromBase(baseUrlInput.value.trim()));
+
+    socket.onopen = () => {
+      setStatus(false, "Socket open, negotiating STOMP");
+      sendFrame("CONNECT", {
+        "accept-version": "1.2,1.1,1.0",
+        "heart-beat": "0,0"
+      });
+    };
+
+    socket.onmessage = event => {
+      stompBuffer += event.data;
+      const frames = stompBuffer.split("\0");
+      stompBuffer = frames.pop();
+      for (const frame of frames) {
+        if (frame.trim()) {
+          handleFrame(frame);
+        }
+      }
+    };
+
+    socket.onerror = () => {
+      setStatus(false, "WebSocket error");
+    };
+
+    socket.onclose = () => {
+      setStatus(false, "Disconnected");
+    };
+  }
+
+  function disconnect() {
+    if (socket) {
+      try {
+        if (socket.readyState === WebSocket.OPEN) {
+          sendFrame("DISCONNECT");
+        }
+        socket.close();
+      } catch (_) {
+      }
+      socket = undefined;
+    }
+    setStatus(false, "Disconnected");
+  }
+
+  async function sendDemoEvent() {
+    let payload;
+    try {
+      payload = JSON.parse(payloadInput.value);
+    } catch (error) {
+      appendEvent("CLIENT", `Payload JSON is invalid: ${error.message}`);
+      return;
+    }
+
+    const baseUrl = baseUrlInput.value.trim();
+    const userId = userIdInput.value.trim();
+    const eventType = eventTypeInput.value;
+    const symbol = symbolInput.value.trim();
+    const orderId = crypto.randomUUID();
+    const body = {
+      eventId: crypto.randomUUID(),
+      eventType,
+      occurredAt: new Date().toISOString(),
+      correlationId: crypto.randomUUID(),
+      causationId: crypto.randomUUID(),
+      symbol,
+      orderId,
+      userId,
+      shardId: "demo-shard-1",
+      version: 1,
+      payload
+    };
+
+    const response = await fetch(`${baseUrl}/internal/notifications/events`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(body)
+    });
+    const json = await response.json();
+    appendEvent("INGEST", json, `${response.status} ${response.statusText}`);
+  }
+
+  document.getElementById("connectBtn").addEventListener("click", connect);
+  document.getElementById("disconnectBtn").addEventListener("click", disconnect);
+  document.getElementById("loadTradePreset").addEventListener("click", () => applyPreset("trade"));
+  document.getElementById("loadBalancePreset").addEventListener("click", () => applyPreset("balance"));
+  document.getElementById("loadOrderPreset").addEventListener("click", () => applyPreset("order"));
+  document.getElementById("sendBtn").addEventListener("click", () => {
+    sendDemoEvent().catch(error => appendEvent("CLIENT", error.message));
+  });
+
+  userIdInput.addEventListener("input", updateTopicPreview);
+  channelInput.addEventListener("change", updateTopicPreview);
+  applyPreset("trade");
+  updateTopicPreview();
+</script>
+</body>
+</html>

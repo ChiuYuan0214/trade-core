@@ -13,6 +13,7 @@ Use this file as the entry point for the repo.
 - [architecture/java-market-data-service.md](/Users/adam/trading_system/docs/architecture/java-market-data-service.md): Why `market-data-service` is implemented in Java/Spring Boot and how it fits the public read-side design.
 - [architecture/matching-engine-design.md](/Users/adam/trading_system/docs/architecture/matching-engine-design.md): Current matching-book structure, shard ownership model, and upgrade path.
 - [features/implementation-plan.md](/Users/adam/trading_system/docs/features/implementation-plan.md): Feature order, milestones, and discussion checkpoints.
+- [features/status-checklist.md](/Users/adam/trading_system/docs/features/status-checklist.md): Current completed, partial, and pending feature status.
 - [features/java-notification-demo.md](/Users/adam/trading_system/docs/features/java-notification-demo.md): How to demo the Java Spring Boot notification service in the portfolio project.
 - [features/java-market-data-demo.md](/Users/adam/trading_system/docs/features/java-market-data-demo.md): How to demo the Java Spring Boot market-data service in the portfolio project.
 - [schema/tables.md](/Users/adam/trading_system/docs/schema/tables.md): PostgreSQL table design split by domain ownership.

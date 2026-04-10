@@ -22,6 +22,26 @@ cd services/market-data-service-java && mvn -DskipTests package
 docker compose -f deployments/docker-compose.yml up -d redis market-data-service-java
 ```
 
+Or start it locally without Redis:
+
+```bash
+./scripts/java/run_market_data_service.sh
+```
+
+## Open the browser demo
+
+Once the service is up, open:
+
+- `http://127.0.0.1:8095/demo/market-data.html`
+
+The page subscribes to the SSE stream, loads snapshots over HTTP, and can push demo snapshots into the service from the browser.
+
+If you want both Java demos together in local mode:
+
+```bash
+./scripts/java/run_portfolio_demo.sh
+```
+
 ## Push a demo snapshot
 
 ```bash
@@ -38,6 +58,18 @@ curl -sS -X POST http://127.0.0.1:8095/internal/market-data/snapshots \
     "occurredAt":"2026-04-10T00:00:00Z",
     "source":"demo"
   }'
+```
+
+Or use the helper script:
+
+```bash
+./scripts/seed/send_market_data_demo.sh
+```
+
+To stop the local demo stack later:
+
+```bash
+./scripts/java/stop_portfolio_demo.sh
 ```
 
 ## Read the snapshot back
@@ -58,3 +90,4 @@ curl -N http://127.0.0.1:8095/api/v1/market-data/stream?symbol=BTC/USDT
 - The Java service uses Java 21 virtual threads for public request and stream handling.
 - The service is ready to sit behind Redis pub/sub for public market-data fan-out.
 - The HTTP query, ingest, and Redis intake paths are covered by automated tests, so the service is more than a static scaffold.
+- The browser demo page makes the SSE fan-out story easy to show in a portfolio walkthrough.

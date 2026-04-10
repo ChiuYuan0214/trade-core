@@ -83,12 +83,18 @@ The codebase has not been implemented yet. Populate this file incrementally as c
 | Java Notification | `publish` | `services/notification-service-java/.../GrpcNotificationService.java` | Accept private events over gRPC and hand them to the notification dispatcher. |
 | Java Notification | `notificationVirtualThreadExecutor` | `services/notification-service-java/.../VirtualThreadConfig.java` | Provide the shared Java 21 virtual-thread executor for HTTP and gRPC request handling. |
 | Java Notification | `ingest` | `services/notification-service-java/.../NotificationIngestController.java` | Accept demo/private events over HTTP for local portfolio demos without Kafka. |
+| Java Notification | `private-feed.html` | `services/notification-service-java/src/main/resources/static/demo/private-feed.html` | Browser demo for private STOMP/WebSocket feed subscription and HTTP event injection. |
+| Java Notification | `run_notification_service.sh` | `scripts/java/run_notification_service.sh` | Package and start the notification service locally in portfolio demo mode. |
 | Java Market Data | `ingest` | `services/market-data-service-java/.../MarketDataController.java` | Accept public market-data snapshots over HTTP for local demos or adapter intake. |
 | Java Market Data | `getSnapshot` | `services/market-data-service-java/.../MarketDataController.java` | Return the latest public snapshot for one symbol. |
 | Java Market Data | `stream` | `services/market-data-service-java/.../MarketDataController.java` | Open the public SSE stream for a symbol. |
 | Java Market Data | `ingest` | `services/market-data-service-java/.../MarketDataDispatchService.java` | Store a public snapshot and publish it to SSE subscribers. |
 | Java Market Data | `subscribe` | `services/market-data-service-java/.../SseMarketDataPublisher.java` | Register a public symbol subscriber and keep the SSE emitter alive. |
 | Java Market Data | `notificationVirtualThreadExecutor` | `services/market-data-service-java/.../VirtualThreadConfig.java` | Provide the shared Java 21 virtual-thread executor for HTTP request handling. |
+| Java Market Data | `market-data.html` | `services/market-data-service-java/src/main/resources/static/demo/market-data.html` | Browser demo for SSE subscription, snapshot query, and local ingest. |
+| Java Market Data | `run_market_data_service.sh` | `scripts/java/run_market_data_service.sh` | Package and start the market-data service locally in portfolio demo mode. |
+| Java Demo | `run_portfolio_demo.sh` | `scripts/java/run_portfolio_demo.sh` | Start both Java portfolio demo services in local standalone mode. |
+| Java Demo | `stop_portfolio_demo.sh` | `scripts/java/stop_portfolio_demo.sh` | Stop the local standalone Java portfolio demo services. |
 | Postgres | `Run` | `modules/exchange-core-go/postgres/db.go` | Open and ping the PostgreSQL connection pool. |
 | Postgres | `Run` | `modules/exchange-core-go/postgres/migrations.go` | Apply repo SQL migrations during postgres-backed startup. |
 | Postgres | `Run` | `modules/exchange-core-go/postgres/demo_ledger_seed.go` | Seed demo users and account balances when `ledger-service` starts with the postgres backend. |
